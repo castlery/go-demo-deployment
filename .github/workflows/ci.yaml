@@ -1,0 +1,53 @@
+name: Lint & Automerge
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - 'v*.*.*'
+  pull_request:
+    branches:
+      - 'master'
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  
+jobs:
+  lint:
+    # runs-on: ubuntu-latest
+    runs-on: [self-hosted]
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          submodules: 'false' # no need to checkout submodules for docker build
+
+      - id: yaml-lint
+        uses: ibiqlik/action-yamllint@v2
+        with:
+          file_or_dir: apps/**/*values*.yaml
+          config_data: |
+            extends: default
+            rules:
+              new-line-at-end-of-file:
+                level: warning
+              trailing-spaces:
+                level: warning
+              line-length:
+                max: 120
+                level: warning
+              new-lines:
+                type: unix
+                level: warning
+
+  automerge:
+    # runs-on: ubuntu-latest
+    runs-on: [self-hosted]
+    if: ${{ github.event_name == 'pull_request' }}
+    needs: lint
+    steps:
+      - id: automerge
+        name: automerge
+        uses: "pascalgn/automerge-action@v0.15.6"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
