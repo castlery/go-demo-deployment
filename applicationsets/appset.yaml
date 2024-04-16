@@ -17,7 +17,7 @@ spec:
       #   name: dev
   template:
     metadata:
-      name: 'go-demo-{{name}}'
+      name: '{{name}}'
     spec:
       project: ecomm-project
       source:
