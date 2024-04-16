@@ -1,0 +1,14 @@
+image:
+  tag: pr-43-a1fc0396b01896071113b0076878cfb5f11fcc3a
+externalSecret:
+  secretKey: ecomm-team/go-demo/dev
+ingress:
+  enabled: true
+  annotations: {}
+  hosts:
+    - host: go-demo-dev.cslr.io
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - host: go-demo-dev.cslr.io

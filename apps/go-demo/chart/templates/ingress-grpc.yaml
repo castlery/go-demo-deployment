@@ -1,0 +1,42 @@
+{{- if .Values.ingress.grpc.enabled -}}
+{{- $serviceName := include "go-echo-example.fullname" . -}}
+{{- $ingressName := printf "%s-%s" $serviceName "grpc" -}}
+{{- $svcPort := .Values.service.port -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $ingressName }}
+  labels:
+    {{- include "go-echo-example.labels" . | nindent 4 }}
+  {{- with .Values.ingress.grpc.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  ingressClassName: {{ .Values.ingress.grpc.className }}
+  {{- if .Values.ingress.grpc.tls }}
+  tls:
+    {{- range .Values.ingress.grpc.tls }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      secretName: {{ .secretName }}
+    {{- end }}
+  {{- end }}
+  rules:
+    {{- range .Values.ingress.grpc.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: {{ $serviceName }}
+                port:
+                  number: {{ $svcPort }}
+          {{- end }}
+    {{- end }}
+{{- end }}

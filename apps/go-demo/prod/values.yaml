@@ -1,0 +1,17 @@
+image:
+  tag: v1.0.0
+
+externalSecret:
+  secretKey: "ecomm-team/go-demo/prod"
+
+
+ingress:
+  enabled: true
+  annotations: {}
+  hosts:
+    - host: go-demo-prod.cslr.io
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - host: go-demo-prod.cslr.io
