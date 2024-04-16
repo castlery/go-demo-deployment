@@ -19,7 +19,7 @@ spec:
     metadata:
       name: 'go-demo-{{name}}'
     spec:
-      project: scm-project
+      project: ecomm-project
       source:
         repoURL: https://github.com/castlery/go-demo-deployment
         targetRevision: master
